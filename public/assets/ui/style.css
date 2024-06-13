@@ -1,0 +1,26 @@
+.global-message{
+    position: fixed;
+    bottom: 510px;
+    font-size:4vmin ;
+    right: 1px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 500px;
+    border-radius: 50px;
+    color: #FFFFFF;
+    z-index:5;
+}
+
+.global-message.info{
+    background-color: #4586ff;
+}
+.global-message.error{
+    background-color: #f70606;
+}
+
+
+
+
+
+
+

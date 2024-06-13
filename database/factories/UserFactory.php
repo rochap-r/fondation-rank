@@ -24,11 +24,20 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => 'chiyey',
+            'sname' => 'kanyik',
+            'lname' => 'tesh',
+            'gender' => 'm',
+            'phone' => '+243895994197',
+            'email' => 'kanyiktesh@ukatesh.org',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'description'=>"
+                    Je suis Chiyey Kanyik Tesh, visioneur du projet Ukatesh une initiative pour
+                    promouvoir la formation d'une elite pour un futur congo.
+            "
+            ,'role_id'=>1,
         ];
     }
 

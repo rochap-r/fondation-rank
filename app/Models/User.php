@@ -18,8 +18,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'sname',
+        'lname',
+        'gender',
+        'phone',
+        'description',
         'email',
         'password',
+        'role_id',
+        'type_user_id',
+        'fonction_id',
     ];
 
     /**
@@ -44,4 +52,36 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class,'imageable');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    //methode statique
+    public function scopeSearch($query, $term)
+    {
+        $term = "%$term%";
+        $query->where(function ($query) use ($term) {
+            $query->where('name', 'like', $term)
+                ->orWhere('sname', 'like', $term)
+                ->orWhere('email', 'like', $term);
+        });
+    }
+    
 }
