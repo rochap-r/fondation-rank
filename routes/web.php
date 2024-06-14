@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TinyMceController;
 use App\Http\Controllers\Administrations\PostController;
@@ -9,11 +11,16 @@ use App\Http\Controllers\Administrations\AdminController;
 use App\Http\Controllers\Administrations\EventController;
 use App\Http\Controllers\Administrations\ProjectController;
 use App\Http\Controllers\Administrations\CategoryController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\HomeController;
 
+Route::get('/', [HomeController::class,'index'])->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/blog.index', [BlogController::class,'index'])->name('blog.index');
+Route::get('/blog.show', [BlogController::class,'show'])->name('blog.show');
+//Contact & About
+Route::get('/about', [AboutController::class,'index'])->name('about');
+Route::get('/contact', [ContactController::class,'index'])->name('contact');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
