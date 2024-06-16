@@ -1,24 +1,15 @@
 <div>
-    {{-- If your happiness depends on money, you will never be happy with yourself. --}}
+    {{-- Close your eyes. Count to one. That is how long forever feels. --}}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <div class="col-md-3 mb-1">
+            <div class="col-md-7 m-1">
                 <label for="input" class="form-label">Recherche d'article par titre</label>
                 <input type="text" id="input" class="form-control" placeholder="Tapez un titre ici..."
-                    wire:model="search">
+                    wire:model.live="search">
             </div>
-            <div class="col-md-3 mb-1">
-                <label for="select" class="form-label">Recherche par Auteur</label>
-                <select id="select" class="form-select" wire:model="author">
-                    <option value="">-- Sélectionnez l'auteur --</option>
-                    @foreach (\App\Models\User::whereHas('events')->select('id', 'name')->get() as $auteur)
-                        <option value="{{ $auteur->id }}">{{ $auteur->name }} {{ $auteur->fname }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-3 mb-1">
+            <div class="col-md-5 m-1">
                 <label for="select" class="form-label">Ordonner de façon</label>
-                <select id="select" class="form-select" wire:model="orderBy">
+                <select id="select" class="form-select" wire:model.live="orderBy">
                     <option value="desc">DESCENDANTE</option>
                     <option value="asc">ASCENDANTE</option>
                 </select>
@@ -27,22 +18,22 @@
         </div>
         <div class="card-body">
             <div class="row row-cards">
-                @forelse($events as $event)
-                    <div class="col-md-6 col-lg-3" wire:key='{{ $event->id }}'>
+                @forelse($abouts as $about)
+                    <div class="col-md-6 col-lg-3" wire:key='{{$about->id}}'>
                         <div class="card">
-                            <img src="{{ $event->image
-                                ? (\Illuminate\Support\Str::startsWith($event->image->path, 'placeholders/')
+                            <img src="{{ $about->image
+                                ? (\Illuminate\Support\Str::startsWith($about->image->path, 'placeholders/')
                                     ? asset('placeholders/post.png')
-                                    : asset('storage/events/thumbnails/resized_' . $event->image->name))
+                                    : asset('storage/abouts/thumbnails/resized_' . $about->image->name))
                                 : asset('placeholders/post.png') }}"
                                 alt="" class="card-img-top">
                             <div class="card-body p-2">
-                                <h3 class="m-0 mb-1">{{ Str::limit($event->title, 60) }}</h3>
+                                <h3 class="m-0 mb-1">{{ Str::limit($about->title, 60) }}</h3>
                             </div>
 
                             <div class="card-body p-2 text-center">
                                 <h3 class="m-0 mb-1">
-                                    @if ($event->approved)
+                                    @if ($about->approved)
                                         <span class="badge badge-success">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="icon icon-tabler icon-tabler-check" width="24" height="24"
@@ -69,12 +60,13 @@
                                     @endif
 
                                     <span
-                                        class="badge badge-default">{{ $event->created_at->isoFormat('D') }}-{{ \Str::ucfirst($event->created_at->isoFormat('MMM')) }}-{{ $event->created_at->isoFormat('Y') }}</span>
+                                        class="badge badge-default">{{ $about->created_at->isoFormat('D') }}-{{ \Str::ucfirst($about->created_at->isoFormat('MMM')) }}-{{ $about->created_at->isoFormat('Y') }}</span>
                                 </h3>
                             </div>
 
                             <div class="d-flex">
-                                <a href="#" class="card-btn btn  btn-primary"><svg
+                                <a href="#" class="card-btn btn  btn-primary" wire:click.prevent='readAbout({{ $about->id }})'>
+                                    <svg
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
@@ -85,7 +77,7 @@
                                             d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
                                     </svg></a>
 
-                                <a href="{{ route('admin.event.edit', $event->slug) }}" class="card-btn btn btn-warning">
+                                <a href="{{ route('admin.about.edit', $about->slug) }}" class="card-btn btn btn-warning">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
@@ -96,7 +88,7 @@
                                         <path d="M16 19h6" />
                                     </svg>
                                 </a>
-                                <a href="" wire:click.prevent="deleteEvent({{ $event->id }})"
+                                <a href="" wire:click.prevent="deleteAbout({{ $about->id }})"
                                     class="card-btn btn btn-danger">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -115,16 +107,47 @@
                     </div>
                 @empty
                     <span class="text-danger">
-                        Aucun évenement n'est disponible!
+                        Aucune Rubrique n'est disponible!
                     </span>
                 @endforelse
                 <div class="d-block mt-4">
-                    {{ $events->links('livewire::bootstrap') }}
+                    {{ $abouts->links('livewire::bootstrap') }}
                 </div>
             </div>
         </div>
     </div>
 
 
+        <!-- Modale de la Description du Projet -->
+        <div wire:ignore.self class="modal modal-blur fade" id="read_modal" tabindex="-1" style="display: none;"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $aboutRead->title ?? '' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="container mt-2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src="{{ $aboutRead
+                                ? (\Illuminate\Support\Str::startsWith($aboutRead->image->path, 'placeholders/')
+                                    ? asset('placeholders/post.png')
+                                    : asset('storage/abouts/'. $aboutRead->image->name))
+                                : 'https://via.placeholder.com/300x200' }}"
+                                class="img-fluid rounded" alt="{{ $aboutRead->title ?? '' }}" style="width: 1140px;">
+                        </div>
+                        <hr class="bg-dark">
+                        <div class="col-md-12 mt-4">
+                            <p>{!! $aboutRead ? $aboutRead->content : '' !!}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </div>

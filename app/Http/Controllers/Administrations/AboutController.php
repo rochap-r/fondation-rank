@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Administrations;
 
-use App\Models\Event;
 use App\Services\Images;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\About;
 use Illuminate\Support\Facades\Storage;
 
-class EventController extends Controller
+class AboutController extends Controller
 {
     public $rules = [
-        'title' => 'required|unique:events,title,',
+        'title' => 'required|unique:abouts,title,',
         'content' => 'required',
         'image' => 'required|mimes:jpeg,jpg,png,webp|max:4000',
     ];
@@ -25,13 +25,13 @@ class EventController extends Controller
     ];
     public function index()
     {
-        return view('administration.ui.events.index');
+        return view('administration.ui.abouts.index');
     }
 
 
     public function create()
     {
-        return view('administration.ui.events.create');
+        return view('administration.ui.abouts.create');
     }
 
     public function add(Request $request)
@@ -42,36 +42,16 @@ class EventController extends Controller
         } else {
             $validated['approved'] = $request->approved !== null;
         }
-        if ($request->readable === null) {
-            $validated['readable'] = 0;
-        } else {
-            $validated['readable'] = $request->readable !== null;
-        }
 
-        if (!empty($request->input('tel'))) {
-            $validated['tel'] = $request->input('tel');
-        }
-        if (!empty($request->input('lieu'))) {
-            $validated['lieu'] = $request->input('lieu');
-        }
-        if (!empty($request->input('email'))) {
-            $validated['email'] = $request->input('email');
-        }
-        if (!empty($request->input('dat_event'))) {
-            $validated['dat_event'] = $request->input('dat_event');
-        }
 
-        $validated['user_id'] = auth()->id();
-        //$validated['slug'] = Str::slug($request->title);
-
-        $event = Event::create($validated);
+        $about = About::create($validated);
         $return = response()->json([
             'code' => 1,
-            'msg' => "L'événement a été créé avec succès!",
-            'redirectUrl' => route('admin.event.index'),
+            'msg' => "La Rubrique d'apropos a été créé avec succès!",
+            'redirectUrl' => route('admin.about.index'),
         ]);
         if ($request->has('image')) {
-            $folder = 'events/';
+            $folder = 'abouts/';
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
             $new_file = time() . '_' . $filename;
@@ -87,7 +67,7 @@ class EventController extends Controller
             if ($upload) {
                 $fileName = $new_file;
                 $extension = $file->getClientOriginalExtension();
-                $result = $event->image()->create([
+                $result = $about->image()->create([
                     'name' => $fileName,
                     'extension' => $extension,
                     'path' => $upload,
@@ -96,8 +76,8 @@ class EventController extends Controller
                     $return = response()->json(
                         [
                             'code' => 1,
-                            'msg' => "L'événement a été créé avec succès!",
-                            'redirectUrl' => route('admin.event.index'),
+                            'msg' => "La Rubrique d'apropos a été créé avec succès!",
+                            'redirectUrl' => route('admin.about.index'),
                         ]
                     );
                 } else {
@@ -112,23 +92,23 @@ class EventController extends Controller
 
     public function edit(string $slug)
     {
-        $event = Event::where('slug', $slug)->first();
+        $about = About::where('slug', $slug)->first();
         //dd($event);
-        if (!$event) {
+        if (!$about) {
             return abort(404);
         }
         //dd($post->category);
-        return view('administration.ui.events.edit', [
-            'event' => $event
+        return view('administration.ui.abouts.edit', [
+            'about' => $about
         ]);
     }
 
-    public function update(Request $request, Event $event): \Illuminate\Http\JsonResponse
+    public function update(Request $request, About $about): \Illuminate\Http\JsonResponse
     {
         //la maj de la photo n'est obligatoire
 
         $this->rules['image'] = 'nullable|file|mimes:jpeg,jpg,png,webp|max:1024';
-        $this->rules['title'] = 'required|unique:events,title,' . $event->id;
+        $this->rules['title'] = 'required|unique:abouts,title,' . $about->id;
         //dd($post);
         $validated = $request->validate($this->rules, $this->messages);
         if ($request->approved === null) {
@@ -136,49 +116,28 @@ class EventController extends Controller
         } else {
             $validated['approved'] = $request->approved !== null;
         }
-        if ($request->readable === null) {
-            $validated['readable'] = 0;
-        } else {
-            $validated['readable'] = $request->readable !== null;
-        }
 
-        if (!empty($request->input('tel'))) {
-            $validated['tel'] = $request->input('tel');
-        }
-        if (!empty($request->input('lieu'))) {
-            $validated['lieu'] = $request->input('lieu');
-        }
-        if (!empty($request->input('email'))) {
-            $validated['email'] = $request->input('email');
-        }
-        if (!empty($request->input('dat_event'))) {
-            $validated['dat_event'] = $request->input('dat_event');
-        }
-
-        $validated['user_id'] = auth()->id();
-
-        $event->update($validated);
+        $about->update($validated);
         $return = response()->json(
             [
                 'code' => 1,
-                'msg' => "L'événement a été mis à jour avec succès!",
-                'content' => $event->content,
-                'redirectUrl' => route('admin.event.index'),
+                'msg' => "La Rubrique d'apropos a été mis à jour avec succès!",
+                'content' => $about->content,
+                'redirectUrl' => route('admin.about.index'),
             ]
         );
 
         if ($request->has('image')) {
-            $folder = 'events/';
+            $folder = 'abouts/';
             $thumbnail_path = $folder . 'thumbnails/';
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
             $new_file = time() . '_' . $filename;
 
             //suppression des anciennes images
-            $deleteResized = $thumbnail_path . 'resized_' . $event->image->name;
-            $deleteThumb = $thumbnail_path . 'thumb_' . $event->image->name;
-            $deleteBan = $thumbnail_path . 'banner_' . $event->image->name;
-            $deletePath = $folder . $event->image->name;
+            $deleteResized = $thumbnail_path . 'resized_' . $about->image->name;
+            $deleteThumb = $thumbnail_path . 'thumb_' . $about->image->name;
+            $deletePath = $folder . $about->image->name;
 
             if (Storage::disk('public')->exists($deleteResized)) {
                 Storage::disk('public')->delete($deleteResized);
@@ -188,9 +147,6 @@ class EventController extends Controller
             }
             if (Storage::disk('public')->exists($deletePath)) {
                 Storage::disk('public')->delete($deletePath);
-            }
-            if (Storage::disk('public')->exists($deleteBan)) {
-                Storage::disk('public')->delete($deleteBan);
             }
 
             if (!Storage::disk('public')->exists($folder)) {
@@ -204,7 +160,7 @@ class EventController extends Controller
             if ($upload) {
                 $fileName = $new_file;
                 $extension = $file->getClientOriginalExtension();
-                $result = $event->image()->update([
+                $result = $about->image()->update([
                     'name' => $fileName,
                     'extension' => $extension,
                     'path' => $upload,
@@ -213,8 +169,8 @@ class EventController extends Controller
                     $return = response()->json(
                         [
                             'code' => 1,
-                            'msg' => "L'événement a été mis à jour avec succès!",
-                            'content' => $event->content,
+                            'msg' => "La Rubrique d'apropos a été mis à jour avec succès!",
+                            'content' => $about->content,
                             'redirectUrl' => route('admin.event.index'),
                         ]
                     );

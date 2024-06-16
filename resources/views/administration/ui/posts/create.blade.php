@@ -32,7 +32,6 @@
             color: #000;
         }
     </style>
-
 @endpush
 @section('content')
     <header class="bg-dark text-white text-center py-3">
@@ -92,11 +91,11 @@
                     <label class="row">
                         <span class="col">Article Approuvé</span>
                         <span class="col-auto">
-                           <label class="form-check form-check-single form-switch">
-                             <input class="form-check-input" type="checkbox" name="approved">
-                               <span class="text-danger error-text approved_error"></span>
-                           </label>
-                       </span>
+                            <label class="form-check form-check-single form-switch">
+                                <input class="form-check-input" type="checkbox" name="approved">
+                                <span class="text-danger error-text approved_error"></span>
+                            </label>
+                        </span>
                     </label>
                 </div>
             </div>
@@ -214,6 +213,10 @@
                         tinymce.get('post-desc').setContent('');
 
                         toastr.success(response.msg);
+                        //redirect
+                        setTimeout(function() {
+                            location.href = response.redirectUrl;
+                        }, 1500);
                     } else {
                         toastr.error(response.msg);
                     }

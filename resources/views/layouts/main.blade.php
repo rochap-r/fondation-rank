@@ -26,6 +26,9 @@
     <link rel="stylesheet" href="{{ asset('asset/css/responsive.css') }}">
     <!-- color -->
     <link rel="stylesheet" href="{{ asset('asset/css/color.css') }}">
+    <style>
+       
+    </style>
     @stack('custom_css')
 </head>
 
@@ -53,7 +56,7 @@
                 <div class="row align-items-center">
                     <div class="col-xl-4 col-md-6">
                         <div class="footer-logo-one">
-                            <a href="index.html">
+                            <a href="{{ route('home') }}">
                                 <p class="logo-text">
                                     <img src="{{ asset('asset/img/logo-rank-bg.png') }}" alt=""
                                         style="max-width: 120px">
@@ -206,6 +209,7 @@
         }, 2000);
     </script>
     <script src="{{ asset('asset/js/custom.js') }}"></script>
+    @stack('custom_js')
 </body>
 
 </html>

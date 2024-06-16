@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\About;
 use Illuminate\Http\Request;
 
 class AboutController extends Controller
 {
-    public function index()
+    public function index(string $slug)
     {
-        return view('about');
+        $about=About::where('slug',$slug)->firstOrFail();
+        return view('about',['about'=>$about]);
     }
 }

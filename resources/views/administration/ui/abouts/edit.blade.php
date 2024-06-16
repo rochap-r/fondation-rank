@@ -1,119 +1,104 @@
 @extends('administration.ui.app')
-
-@section('title', 'Article | Edition de l\'article: ' . $post->title)
-
+@section('title', 'Edition d\'Apropos: ' . $about->title)
 @push('style')
-    <style>
-        .imageuploadfy {
-            border: 0;
-            max-width: 100%;
-        }
-
-        header {
-            background: linear-gradient(rgba(47, 53, 75, 0.6), rgba(35, 90, 72, 0.6)), url({{ asset('') }});
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-        }
-
-        header .display-4 {
-            font-size: 2.5rem;
-            line-height: 1.2;
-        }
-
-        header .btn-primary {
-            border-color: #fff;
-            background-color: transparent;
-            color: #fff;
-        }
-
-        header .btn-primary:hover {
-            background-color: #fff;
-            color: #000;
-        }
-    </style>
+    {{-- CSS complementaires --}}
 @endpush
+
 @section('content')
-    <header class="bg-dark text-white text-center py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="display-6">Edition du Projet : {{ $post->title }} </h1>
-                    <a href="{{ route('admin.post.index') }}" class="btn btn-primary btn-lg">Accueil</a>
+
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <h2 class="page-title text-uppercase">
+                        Edition: {{ $about->title }}
+                    </h2>
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="d-flex">
+                        <a href="{{ route('admin.event.index') }}" class="btn btn-primary text-uppercase">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-check"
+                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M3.5 5.5l1.5 1.5l2.5 -2.5"></path>
+                                <path d="M3.5 11.5l1.5 1.5l2.5 -2.5"></path>
+                                <path d="M3.5 17.5l1.5 1.5l2.5 -2.5"></path>
+                                <path d="M11 6l9 0"></path>
+                                <path d="M11 12l9 0"></path>
+                                <path d="M11 18l9 0"></path>
+                            </svg>
+                            Voir les événements
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </header>
-
-    <div class="container mt-4">
-        <form method="POST" action="{{ route('admin.post.update', $post) }}" id="editPost" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label for="title" class="form-label">Titre:</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ $post->title }}">
-                <span class="text-danger error-text title_error"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Image:</label>
-                        <input type="file" class="form-control" id="image" name="image">
-                        <span class="text-danger error-text image_error"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="image_holder mb-2" style="max-width: 250px;">
-                        <img src="" alt="" class="img-thumbnail" id="image-previewer"
-                            data-ijabo-default-img="{{ $post->image
-                                ? (\Illuminate\Support\Str::startsWith($post->image->path, 'placeholders/')
-                                    ? asset('placeholders/post.png')
-                                    : asset('storage/posts/thumbnails/resized_' . $post->image->name))
-                                : asset('placeholders/post.png') }}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="category" class="form-label">Categorie d'Article:</label>
-                <select class="form-select mb-3" id="category" name="category_id">
-                    <option value="">-- Aucune sélection --</option>
-                    @foreach (\App\Models\Category::all() as $category)
-                        <option {{ $post->category->id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">
-                            {{ $category->name }}</option>
-                    @endforeach
-                </select>
-                <span class="text-danger error-text category_id_error"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="post-desc" class="form-label">Contenu:</label>
-                <textarea class="form-control" id="post-desc" name="body">
-                    {!! $post->body !!}
-                </textarea>
-                <span class="text-danger error-text body_error"></span>
-            </div>
-
-            <div class="mb-3">
-                <div class="bg-white ">
-                    <label class="row">
-                        <span
-                            class="col {{ $post->approved ? 'text-success' : 'text-danger' }}">{{ $post->approved ? 'Approuvé' : 'Non Approuvé' }}</span>
-                        <span class="col-auto">
-                            <label class="form-check form-check-single form-switch">
-                                <input class="form-check-input" {{ $post->approved ? 'checked' : '' }} type="checkbox"
-                                    name="approved">
-                                <span class="text-danger error-text approved_error"></span>
-                            </label>
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Créer</button>
-        </form>
     </div>
 
+    <form method="POST" action="{{ route('admin.about.update', $about) }}" id="editAbout" enctype="multipart/form-data">
+        @csrf
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-title">Titre de la Rubrique</label>
+                    <input type="text" class="form-control" id="form-title" name="title"
+                        placeholder="Saisissez le titre de la rubrique" value="{{ $about->title }}">
+                    <span class="text-danger error-text title_error"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image:</label>
+                            <input type="file" class="form-control" id="image" name="image">
+                            <span class="text-danger error-text image_error"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="image_holder mb-2" style="max-width: 250px;">
+                            <img src="" alt="" class="img-thumbnail" id="image-previewer"
+                                data-ijabo-default-img="{{ $about->image
+                                    ? (\Illuminate\Support\Str::startsWith($about->image->path, 'placeholders/')
+                                        ? asset('placeholders/post.png')
+                                        : asset('storage/abouts/thumbnails/resized_' . $about->image->name))
+                                    : asset('placeholders/post.png') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="content">Contenu de la Rubrique </label>
+                    <textarea class="form-control" id="about-desc" name="content" rows="40">
+                                {!! $about->content !!}
+                            </textarea>
+                    <span class="text-danger error-text content_error"></span>
+                </div>
+                
+
+                <div class="mb-3">
+                    <div>
+                        <label class="row">
+                            <span
+                                class="col {{ $about->approved ? 'text-success' : 'text-danger' }}">{{ $about->approved ? 'Rubrique Approuvée' : 'Rub non Approuvée' }}</span>
+                            <span class="col-auto">
+                                <label class="form-check form-check-single form-switch">
+                                    <input class="form-check-input" {{ $about->approved ? 'checked' : '' }} type="checkbox"
+                                        name="approved">
+                                    <span class="text-danger error-text approved_error"></span>
+                                </label>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary"> Enregistrer la rubrique</button>
+
+            </div>
+        </div>
+    </form>
 
 @endsection
 @push('script')
@@ -122,7 +107,7 @@
             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             console.log(csrfToken);
             tinymce.init({
-                selector: '#post-desc',
+                selector: '#about-desc',
                 setup: function(editor) {
                     editor.on('init change', function() {
                         editor.save();
@@ -135,7 +120,7 @@
                 toolbar_mode: 'floating',
                 image_title: true,
                 automatic_uploads: true,
-                images_upload_url: '{{ route('admin.upload_tinymce_posts_image') }}',
+                images_upload_url: '{{ route('admin.upload_tinymce_abouts_image') }}',
                 file_picker_types: 'image',
                 file_picker_callback: function(cb, value, meta) {
                     var input = document.createElement('input');
@@ -179,7 +164,6 @@
             });
         });
 
-
         $(function() {
             $('input[type="file"][name="image"]').ijaboViewer({
                 preview: '#image-previewer',
@@ -191,19 +175,17 @@
                 onInvalidType: function(message, element) {
 
                 }
-            });
+            })
         });
 
-
-        $('form#editPost').on('submit', function(e) {
+        $('form#editAbout').on('submit', function(e) {
             e.preventDefault();
             toastr.remove();
-
             // Obtenez le contenu de l'éditeur TinyMCE
-            var body = tinymce.get('post-desc').getContent();
+            var body = tinymce.get('about-desc').getContent();
             var form = this;
             var frmdata = new FormData(form);
-            frmdata.append('body', body);
+            frmdata.append('content', body);
 
             $.ajax({
                 url: $(form).attr('action'),
@@ -214,14 +196,14 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('span.error-text').text('');
-                    tinymce.get('post-desc').setContent('');
+                    tinymce.get('about-desc').setContent('');
                 },
                 success: function(response) {
                     toastr.remove();
                     if (response.code === 1) {
                         $(form)[0].reset();
                         $('div.image_holder').html('');
-                        tinymce.get('post-desc').setContent(response.body);
+                        tinymce.get('about-desc').setContent(response.content);
 
                         // Mettez à jour l'état de la case à cocher et le label
                         var checkbox = $('input[name="approved"]');

@@ -214,6 +214,10 @@
                         tinymce.get('project-desc').setContent('');
 
                         toastr.success(response.msg);
+                        //redirect
+                        setTimeout(function() {
+                            location.href = response.redirectUrl;
+                        }, 1500);
                     } else {
                         toastr.error(response.msg);
                     }

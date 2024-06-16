@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/upload_tinymce_image',
             'admin/upload_tinymce_posts_image',
             'admin/upload_tinymce_events_image',
+            'admin/upload_tinymce_abouts_image',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

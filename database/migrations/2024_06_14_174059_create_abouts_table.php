@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique()->nullable();
             $table->longText('content');
+            
+            $table->boolean('approved')->default(true);
             $table->timestamps();
         });
     }

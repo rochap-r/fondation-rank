@@ -40,7 +40,10 @@ class PostController extends Controller
         //$validated['slug'] = Str::slug($request->title);
 
         $post = Post::create($validated);
-        $return = response()->json(['code' => 1, 'msg' => "L'article a été créé avec succès!"]);
+        $return = response()->json([
+            'code' => 1, 'msg' => "L'article a été créé avec succès!",
+            'redirectUrl' => route('admin.post.index'),
+        ]);
         if ($request->has('image')) {
             $folder = 'posts/';
             $file = $request->file('image');
@@ -64,7 +67,10 @@ class PostController extends Controller
                     'path' => $upload,
                 ]);
                 if ($result) {
-                    $return = response()->json(['code' => 1, 'msg' => "L'article a été créé avec succès!"]);
+                    $return = response()->json([
+                        'code' => 1, 'msg' => "L'article a été créé avec succès!",
+                        'redirectUrl' => route('admin.post.index'),
+                    ]);
                 } else {
                     $return = response()->json(['code' => 3, 'msg' => "Oups! Désolé Quelque chose n'a pas bien fonctionné, réessayez!"]);
                 }

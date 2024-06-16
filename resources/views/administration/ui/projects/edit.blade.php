@@ -225,7 +225,7 @@
 
                         setTimeout(function() {
                             location.href = response.redirectUrl;
-                        }, 2000);
+                        }, 1500);
                     } else {
                         toastr.error(response.msg);
                     }

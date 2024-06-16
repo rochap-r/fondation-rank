@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Livewire\Admin\Ui\Events;
+namespace App\Livewire\Admin\Ui\Abouts;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Event as ModelsEvent;
+use App\Models\About as ModelsAbout;
 use Illuminate\Support\Facades\Storage;
 
-class Event extends Component
+class About extends Component
 {
     use WithPagination;
     public $perpage=16;
     public $orderBy='desc';
     public $search=null;
-    public $author=null;
+
+    public $aboutRead=null;
 
     protected $listeners=[
-        'deleteEventAction'
+        'resetForm',
+        'deleteAboutAction'
     ];
 
     public function mount()
@@ -31,11 +33,8 @@ class Event extends Component
     public function render()
     {
         //dd(Evenement::find(1)->image);
-        return view('livewire.admin.ui.events.event',[
-            'events'=>ModelsEvent::search(trim($this->search))
-                ->when($this->author,function ($query){
-                    $query->where('user_id',$this->author);
-                })
+        return view('livewire.admin.ui.abouts.about',[
+            'abouts'=>ModelsAbout::search(trim($this->search))
                 ->when($this->orderBy,function ($query){
                     $query->orderBy('id',$this->orderBy);
                 })
@@ -43,30 +42,29 @@ class Event extends Component
         ]);
     }
 
-    public function deleteEvent(int $id)
+    public function deleteAbout(int $id)
     {
-        $event=ModelsEvent::find($id);
+        $about=ModelsAbout::find($id);
         
         //lancement de la boite de confirmation
-        $this->dispatch('deleteEvent',[
-            'title'=>'Etes-vous vraiment sure de supprimer cet événement?',
-            'html'=>"Suppression de l'Evenement: ".$event->title,
-            'id'=>$event->id
+        $this->dispatch('deleteAbout',[
+            'title'=>'Etes-vous vraiment sure de supprimer cette rubrique?',
+            'html'=>"Suppression de la Rubrique: ".$about->title,
+            'id'=>$about->id
 
         ]);
     }
 
-    public function deleteEventAction(int $id)
+    public function deleteAboutAction(int $id)
     {
-        $event=ModelsEvent::find($id);
+        $about=ModelsAbout::find($id);
         //dd($event);
-        $folder = 'events/';
+        $folder = 'abouts/';
         $thumbnail_path=$folder.'thumbnails/';
         //suppression des anciennes images
-        $deleteResized=$thumbnail_path.'resized_'.$event->image->name;
-        $deleteThumb=$thumbnail_path.'thumb_'.$event->image->name;
-        $deleteBan=$thumbnail_path.'banner_'.$event->image->name;
-        $deletePath=$folder.$event->image->name;
+        $deleteResized=$thumbnail_path.'resized_'.$about->image->name;
+        $deleteThumb=$thumbnail_path.'thumb_'.$about->image->name;
+        $deletePath=$folder.$about->image->name;
 
         if (Storage::disk('public')->exists($deleteResized)) {
             Storage::disk('public')->delete($deleteResized);
@@ -77,11 +75,8 @@ class Event extends Component
         if (Storage::disk('public')->exists($deletePath)) {
             Storage::disk('public')->delete($deletePath);
         }
-        if (Storage::disk('public')->exists($deleteBan)) {
-            Storage::disk('public')->delete($deleteBan);
-        }
-        $event->delete();
-        $this->showToastr("l'évenement a été supprimé avec succès.", 'info');
+        $about->delete();
+        $this->showToastr("la rubrique été supprimée avec succès.", 'info');
     }
 
     private function showToastr(string $message, string $type)
@@ -90,6 +85,20 @@ class Event extends Component
             'type' => $type,
             'message' => $message
         ]);
+    }
+
+    
+    public function resetForm()
+    {
+        $this->aboutRead=null;
+        $this->resetErrorBag();
+
+    }
+    public function readAbout(ModelsAbout $about)
+    {
+        $this->aboutRead=$about;
+        $this->resetErrorBag();
+        $this->dispatch('showReadAbout');
     }
 
 }

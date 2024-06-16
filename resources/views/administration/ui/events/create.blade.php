@@ -143,7 +143,7 @@
                     toolbar_mode: 'floating',
                     image_title: true,
                     automatic_uploads: true,
-                    images_upload_url: '{{ route('admin.upload_tinymce_posts_image') }}',
+                    images_upload_url: '{{ route('admin.upload_tinymce_events_image') }}',
                     file_picker_types: 'image',
                     file_picker_callback: function(cb, value, meta) {
                         var input = document.createElement('input');
@@ -169,7 +169,7 @@
                                 // Effectuez une requête AJAX vers la route d'upload
                                 var xhr = new XMLHttpRequest();
                                 xhr.open('POST',
-                                    '{{ route('admin.upload_tinymce_posts_image') }}');
+                                    '{{ route('admin.upload_tinymce_events_image') }}');
                                 xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
                                 xhr.onload = function() {
                                     if (xhr.status === 200) {
@@ -267,6 +267,10 @@
                             tinymce.get('event-desc').setContent('');
 
                             toastr.success(response.msg);
+                            //redirect
+                            setTimeout(function() {
+                                location.href = response.redirectUrl;
+                            }, 1500);
                         } else {
                             toastr.error(response.msg);
                         }

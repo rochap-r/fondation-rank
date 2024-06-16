@@ -13,12 +13,12 @@ class ProjectController extends Controller
     public $rules = [
         'title' => 'required|unique:projects',
         'description' => 'required',
-        'type_project_id'=>'required',
+        'type_project_id' => 'required',
         'goal' => 'required|numeric',
         'collected' => 'required|numeric',
         'image' => 'required|mimes:jpeg,jpg,png,webp|max:4100',
     ];
-    
+
     public $messages = [
         'title.required' => 'Le titre du projet est obligatoire. Veuillez le saisir.',
         'title.unique' => 'Ce titre existe déjà. Veuillez saisir un autre titre.',
@@ -38,26 +38,29 @@ class ProjectController extends Controller
     public function add(Request $request)
     {
         $validated = $request->validate($this->rules, $this->messages);
-    
+
         $project = Project::create($validated);
-        $return = response()->json(['code'=>1,'msg'=>"Le projet a été créé avec succès!"]);
-    
+        $return = response()->json([
+            'code' => 1, 'msg' => "Le projet a été créé avec succès!",
+            'redirectUrl' => route('admin.project.index'),
+        ]);
+
         if ($request->has('image')) {
             $folder = 'projects/';
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
-            $new_file = time().'_'.$filename;
-    
+            $new_file = time() . '_' . $filename;
+
             if (!Storage::disk('public')->exists($folder)) {
                 Storage::disk('public')->makeDirectory($folder);
             }
-            $upload = Storage::disk('public')->put($folder.$new_file, (string) file_get_contents($file));
+            $upload = Storage::disk('public')->put($folder . $new_file, (string) file_get_contents($file));
 
-            $thumbnail_path=$folder.'thumbnails/';
+            $thumbnail_path = $folder . 'thumbnails/';
 
             Images::ImageProcess($thumbnail_path, $folder, $new_file);
-    
-            if ($upload){
+
+            if ($upload) {
                 $fileName = $new_file;
                 $extension = $file->getClientOriginalExtension();
                 $result = $project->image()->create([
@@ -65,18 +68,21 @@ class ProjectController extends Controller
                     'extension' => $extension,
                     'path' => $upload,
                 ]);
-                if ($result){
-                    $return = response()->json(['code'=>1,'msg'=>"Le projet a été créé avec succès!"]);
-                }else{
-                    $return = response()->json(['code'=>3,'msg'=>"Oups! Désolé Quelque chose n'a pas bien fonctionné, réessayez!"]);
+                if ($result) {
+                    $return = response()->json([
+                        'code' => 1, 'msg' => "Le projet a été créé avec succès!",
+                        'redirectUrl' => route('admin.project.index'),
+                    ]);
+                } else {
+                    $return = response()->json(['code' => 3, 'msg' => "Oups! Désolé Quelque chose n'a pas bien fonctionné, réessayez!"]);
                 }
-            }else{
-                $return = response()->json(['code'=>3,'msg'=>"Oups! Quelque chose n'a pas bien fonctionné, réessayez!"]);
+            } else {
+                $return = response()->json(['code' => 3, 'msg' => "Oups! Quelque chose n'a pas bien fonctionné, réessayez!"]);
             }
         }
         return $return;
     }
-    
+
 
     public function update(Request $request, Project $project): \Illuminate\Http\JsonResponse
     {
@@ -87,29 +93,29 @@ class ProjectController extends Controller
             'collected' => 'required',
             'type_project_id' => 'required',
         ];
-    
+
         $validated = $request->validate($rules);
-    
+
         $project->update($validated);
         $return = response()->json([
-            'code'=>1,
-            'msg'=>"Le projet a été mis à jour avec succès!",
-            'description'=>$project->description,
+            'code' => 1,
+            'msg' => "Le projet a été mis à jour avec succès!",
+            'description' => $project->description,
             'redirectUrl' => route('admin.project.index'),
         ]);
-    
+
         if ($request->has('image')) {
             $folder = 'projects/';
             $thumbnail_path = $folder . 'thumbnails/';
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
             $new_file = time() . '_' . $filename;
-    
+
             // Suppression des anciennes images
             $deleteResized = $thumbnail_path . 'resized_' . $project->image->name;
             $deleteThumb = $thumbnail_path . 'thumb_' . $project->image->name;
             $deletePath = $folder . $project->image->name;
-    
+
             if (Storage::disk('public')->exists($deleteResized)) {
                 Storage::disk('public')->delete($deleteResized);
             }
@@ -119,15 +125,15 @@ class ProjectController extends Controller
             if (Storage::disk('public')->exists($deletePath)) {
                 Storage::disk('public')->delete($deletePath);
             }
-    
+
             if (!Storage::disk('public')->exists($folder)) {
                 Storage::disk('public')->makeDirectory($folder);
             }
             $upload = Storage::disk('public')->put($folder . $new_file, (string) file_get_contents($file));
 
             Images::ImageProcess($thumbnail_path, $folder, $new_file);
-    
-            if ($upload){
+
+            if ($upload) {
                 $fileName = $new_file;
                 $extension = $file->getClientOriginalExtension();
                 $result = $project->image()->update([
@@ -135,43 +141,44 @@ class ProjectController extends Controller
                     'extension' => $extension,
                     'path' => $upload,
                 ]);
-                if ($result){
+                if ($result) {
                     $return = response()->json([
-                        'code'=>1,
-                        'msg'=>"Le projet a été mis à jour avec succès!",
-                        'description'=>$project->description,
+                        'code' => 1,
+                        'msg' => "Le projet a été mis à jour avec succès!",
+                        'description' => $project->description,
                         'redirectUrl' => route('admin.project.index'),
                     ]);
-                }else{
-                    $return = response()->json(['code'=>3,'msg'=>"Oups! Désolé Quelque chose n'a pas bien fonctionné, réessayez!"]);
+                } else {
+                    $return = response()->json(['code' => 3, 'msg' => "Oups! Désolé Quelque chose n'a pas bien fonctionné, réessayez!"]);
                 }
-            }else{
-                $return = response()->json(['code'=>3,'msg'=>"Oups! Quelque chose n'a pas bien fonctionné, réessayez!"]);
+            } else {
+                $return = response()->json(['code' => 3, 'msg' => "Oups! Quelque chose n'a pas bien fonctionné, réessayez!"]);
             }
         }
         return $return;
     }
-    
+
 
 
     public function create()
     {
         return view('administration.ui.projects.create');
     }
-    
+
     public function edit(string $slug)
     {
-        $project=Project::where('slug',$slug)->first();
-        if (!$project){
+        $project = Project::where('slug', $slug)->first();
+        if (!$project) {
             return abort(404);
         }
         //dd($project->category);
-        return view('administration.ui.projects.edit',[
-            'project'=>$project
+        return view('administration.ui.projects.edit', [
+            'project' => $project
         ]);
     }
 
-    public function index(){
+    public function index()
+    {
         return view('administration.ui.projects.index');
     }
 }

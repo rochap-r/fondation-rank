@@ -37,4 +37,14 @@ class TinyMceController extends Controller
         $path=$file->store('tinymce_events_uploads','public');
         return response()->json(['location'=>"/storage/$path"]);
     }
+
+    public function upload_tinymce_abouts_image()
+    {
+        $file=request()->file('file');
+        if (!Storage::disk('public')->exists('tinymce_abouts_uploads')) {
+            Storage::disk('public')->makeDirectory('tinymce_abouts_uploads');
+        }
+        $path=$file->store('tinymce_abouts_uploads','public');
+        return response()->json(['location'=>"/storage/$path"]);
+    }
 }

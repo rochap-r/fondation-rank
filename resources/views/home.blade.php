@@ -342,7 +342,7 @@
                     <img alt="recentimg" src="{{ asset('storage/projects/thumbnails/resized_'. $project->image->name) }}">
                     <i class="fa-solid fa-bolt"></i>
                     <div class="recent-causes-data">
-                        <a href="project-details.html">
+                        <a href="{{ route('project.show',$project->slug) }}">
                             <h3>{{ \Str::ucfirst(words($project->title, 8)) }}</h3>
                         </a>
                         <p>{!! \Str::ucfirst(words($project->description, 15)) !!}</p>
@@ -354,7 +354,7 @@
                             <span>Objectif: ${{ $project->goal }}</span>
                             <span>Collecté: ${{ $project->collected }}</span>
                         </div>
-                        <a href="donation-page.html" class="btn two mt-3"><span>Faire un don maintenant</span></a>
+                        <a href="{{ route('project.index') }}" class="btn two mt-3"><span>Voir plus des projets</span></a>
                     </div>
                 </div>
               @endforeach
@@ -467,10 +467,12 @@
                             </figure>
                             <a href="event-details.html"><i class="fa-solid fa-angle-right"></i></a>
                             <div class="upcoming-event-time">
-                                <h4>{{ $event->isoFormat('D') }}<span>{{ $event->isoFormat('MMM') }}<br>{{ $event->isoFormat('Y') }}</span>
+                                <h4>
+                                    {{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('D') }}<span>{{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('MMM') }}<br>{{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('Y') }}</span></h4>
                                 </h4>
                                 <div class="upcoming-event-separator"></div>
-                                <h4>{{ $event->isoFormat('D') }}<span>{{ $event->isoFormat('MMM') }}<br>{{ $event->isoFormat('Y') }}</span>
+                                <h4>
+                                    {{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('D') }}<span>{{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('MMM') }}<br>{{ \Carbon\Carbon::parse($event->dat_event)->isoFormat('Y') }}</span></h4>
                                 </h4>
                             </div>
                             <div class="upcoming-event-data">
@@ -669,7 +671,7 @@
                                 {{ $post->created_at->isoFormat('Y')}}</span></h4>
                             <div>
                                 <h5>Par Fondation Rank</h5>
-                                <a href="blog-details-1.html">
+                                <a href="{{ route('blog.show',$post->slug) }}">
                                     <h3>{{ \Illuminate\Support\Str::limit($post->title,50) }}</h3>
                                 </a>
                                 <h6>{!! \Str::ucfirst(words($post->body, 15)) !!} </h6>

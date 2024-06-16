@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Administrations\AboutController as AdministrationsAboutController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TinyMceController;
@@ -12,14 +13,22 @@ use App\Http\Controllers\Administrations\EventController;
 use App\Http\Controllers\Administrations\ProjectController;
 use App\Http\Controllers\Administrations\CategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController as ControllersCategoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProjectController as ControllersProjectController;
 
 Route::get('/', [HomeController::class,'index'])->name('home');
+//blog
+Route::get('/category', [ControllersCategoryController::class,'index'])->name('category.index');
+Route::get('/blog.index', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class,'show'])->name('blog.show');
 
-Route::get('/blog.index', [BlogController::class,'index'])->name('blog.index');
-Route::get('/blog.show', [BlogController::class,'show'])->name('blog.show');
+//project
+Route::get('/project.index', [ControllersProjectController::class, 'index'])->name('project.index');
+Route::get('/project/{slug}', [ControllersProjectController::class, 'show'])->name('project.show');
+
 //Contact & About
-Route::get('/about', [AboutController::class,'index'])->name('about');
+Route::get('/about/{slug}', [AboutController::class,'index'])->name('about');
 Route::get('/contact', [ContactController::class,'index'])->name('contact');
 
 Route::get('/dashboard', function () {
@@ -63,6 +72,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/events',[EventController::class,'index'])->name('event.index');
 
     Route::post('/upload_tinymce_events_image', [TinyMceController::class, 'upload_tinymce_events_image'])->name('upload_tinymce_events_image');
+
+    
+    //about admin
+    Route::post('/about.add',[AdministrationsAboutController::class,'add'])->name('about.add');
+    Route::get('/about.create',[AdministrationsAboutController::class,'create'])->name('about.create');
+    Route::get('/about.edit/{slug}',[AdministrationsAboutController::class,'edit'])->name('about.edit');
+    Route::post('/about.update/{about}',[AdministrationsAboutController::class,'update'])->name('about.update');
+    Route::get('/about',[AdministrationsAboutController::class,'index'])->name('about.index');
+
+    Route::post('/upload_tinymce_abouts_image', [TinyMceController::class, 'upload_tinymce_abouts_image'])->name('upload_tinymce_abouts_image');
 });
 
 require __DIR__ . '/auth.php';
+
