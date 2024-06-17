@@ -1,47 +1,78 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="fr">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="description" content="Fondation RANK">
+    <meta name="author" content="Fondation Ruwej A Nkond, Oeuvrant dans la promotion de l'éducation et le dévéloppement rural">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <title>@yield('title', 'Authentification')</title>
+
+    <!-- Styles Include -->
+    <link rel="stylesheet" href="{{ asset('login/css/main.css') }}" id="stylesheet">
+
+</head>
+
+<body class="bg-primary">
+    
+    <!-- Login Form -->
+    <div class="row align-items-center justify-content-center vh-100">
+        <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6">
+            <div class="card rounded-2 border-0 p-5 m-0">
+
+                <div class="card-header border-0 p-0 text-center">
+                    <a href="{{ route('home') }}" class="w-100 d-inline-block mb-5">
+                        <img src="{{ asset('asset/img/logo.png') }}" alt="img" style="max-width:105px!important;">
+                    </a>
+                    <h3>Fondation RANK</h3>
+                    <p class="fs-14 text-dark my-4">Veuillez vous authentifier.</p>
+                </div>
+
+                <div class="card-body p-0">
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="email" value=""
+                                :value="old('email')" placeholder="Entrez votre email" autofocus
+                                autocomplete="username" required>
+                            <span class="text-danger">
+                                @error('email')
+                                    {{ $message }}
+                                @enderror
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password"
+                                placeholder="Entrez votre Mot de passe" autocomplete="current-password" required>
+                            <span class="text-danger">
+                                @error('password')
+                                    {{ $message }}
+                                @enderror
+                            </span>
+                        </div>
+
+                        <button
+                            class="btn btn-primary w-100 text-uppercase text-white rounded-2 lh-34 ff-heading fw-bold shadow">
+                            Connexion
+                        </button>
+
+                        <p class="d-flex align-items-center justify-content-between mt-4 mb-4">Mot de passe oublié? <a
+                                href="{{ route('password.request') }}"
+                                class="text-primary fw-bold text-decoration-underline">Cliquez ici</a></p>
+
+                    </form>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+</body>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</html>
