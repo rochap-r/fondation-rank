@@ -20,7 +20,7 @@ use App\Http\Controllers\Administrations\AboutController as AdministrationsAbout
 
 Route::get('/test',[AuthController::class,'test'])->name('test');
 Route::get('/login',[AuthController::class,'login'])->name('login');
-Route::post('/login',[AuthController::class,'make'])->name('login');
+Route::post('/authLogin',[AuthController::class,'make'])->name('auth.login');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::get('/', [HomeController::class,'index'])->name('home');

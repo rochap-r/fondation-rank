@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('auth.login') }}">
                         @csrf
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
