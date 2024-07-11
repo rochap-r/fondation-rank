@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
                             <input id="email" type="email" class="form-control" name="email" value=""
-                                autofocus placeholder="Entrez l'e-mail">
+                                required autofocus placeholder="Entrez l'e-mail">
                             <span class="text-danger">
                                 @error('email')
                                     {{ $message }}
@@ -52,7 +52,7 @@
                                     Mot de passe oublié?
                                 </a>
                             </label>
-                            <input id="password" type="password" class="form-control" name="password" data-eye
+                            <input id="password" type="password" class="form-control" name="password" required data-eye
                                 placeholder="Entrer le mot de passe" autocomplete="off">
                             <span class="text-danger">
                                 @error('password')
