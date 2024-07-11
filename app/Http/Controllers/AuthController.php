@@ -20,11 +20,11 @@ class AuthController extends Controller
     ];
 
     public function login(){
-        return view('authentification.login');
+        return view('usersAuth.login');
     }
 
     public function test(){
-        return view('authentification.test');
+        return view('usersAuth.test');
     }
 
     public function make(Request $request ){
