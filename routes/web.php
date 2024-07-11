@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\Administrations\AboutController as AdministrationsAboutController;
-use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TinyMceController;
 use App\Http\Controllers\Administrations\PostController;
 use App\Http\Controllers\Administrations\TypeController;
@@ -12,10 +14,13 @@ use App\Http\Controllers\Administrations\AdminController;
 use App\Http\Controllers\Administrations\EventController;
 use App\Http\Controllers\Administrations\ProjectController;
 use App\Http\Controllers\Administrations\CategoryController;
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\CategoryController as ControllersCategoryController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController as ControllersProjectController;
+use App\Http\Controllers\CategoryController as ControllersCategoryController;
+use App\Http\Controllers\Administrations\AboutController as AdministrationsAboutController;
+
+Route::get('/login',[AuthController::class,'login'])->name('login');
+Route::post('/login',[AuthController::class,'make'])->name('login');
+Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::get('/', [HomeController::class,'index'])->name('home');
 //blog
@@ -84,5 +89,4 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/upload_tinymce_abouts_image', [TinyMceController::class, 'upload_tinymce_abouts_image'])->name('upload_tinymce_abouts_image');
 });
 
-require __DIR__ . '/auth.php';
 
