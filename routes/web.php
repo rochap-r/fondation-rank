@@ -18,6 +18,7 @@ use App\Http\Controllers\ProjectController as ControllersProjectController;
 use App\Http\Controllers\CategoryController as ControllersCategoryController;
 use App\Http\Controllers\Administrations\AboutController as AdministrationsAboutController;
 
+Route::get('/test',[AuthController::class,'test'])->name('test');
 Route::get('/login',[AuthController::class,'login'])->name('login');
 Route::post('/login',[AuthController::class,'make'])->name('login');
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');

@@ -23,6 +23,10 @@ class AuthController extends Controller
         return view('authentification.login');
     }
 
+    public function test(){
+        return view('authentification.test');
+    }
+
     public function make(Request $request ){
         $credentials = $request->validate($this->rules, $this->messages);
         if(Auth::attempt($credentials)){
