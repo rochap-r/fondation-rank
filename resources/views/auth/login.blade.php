@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
                             <input id="email" type="email" class="form-control" name="email" value=""
-                                required autofocus placeholder="Entrez l'e-mail">
+                                 autofocus placeholder="Entrez l'e-mail">
                             <span class="text-danger">
                                 @error('email')
                                     {{ $message }}
@@ -50,11 +50,11 @@
 
                         <div class="form-group">
                             <label for="password">Mot de passe
-                                <a href="{{ route('password.request') }}" class="float-right">
+                                <a href="" class="float-right">
                                     Mot de passe oublié?
                                 </a>
                             </label>
-                            <input id="password" type="password" class="form-control" name="password" required data-eye
+                            <input id="password" type="password" class="form-control" name="password"  data-eye
                                 placeholder="Entrer le mot de passe" autocomplete="off">
                             <span class="text-danger">
                                 @error('password')
