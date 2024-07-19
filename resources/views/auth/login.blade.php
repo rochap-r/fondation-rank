@@ -13,7 +13,7 @@
     <title>@yield('title', 'Authentification')</title>
 
     <!-- Styles Include -->
-    <link rel="stylesheet" href="{{ asset('login/css/main.css') }}" id="stylesheet">
+    <link rel="stylesheet" href="{{ asset('auth/css/main.css') }}" id="stylesheet">
 
 </head>
 
@@ -25,7 +25,7 @@
             <div class="card rounded-2 border-0 p-5 m-0">
 
                 <div class="card-header border-0 p-0 text-center">
-                    <a href="{{ route('home') }}" class="w-100 d-inline-block mb-5">
+                    <a href="home" class="w-100 d-inline-block mb-5">
                         <img src="{{ asset('asset/img/logo.png') }}" alt="img" style="max-width:105px!important;">
                     </a>
                     <h3>Fondation RANK</h3>
@@ -33,12 +33,12 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <form method="POST" action="{{ route('auth.login') }}">
+                    <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
                             <input id="email" type="email" class="form-control" name="email" value=""
-                                required autofocus placeholder="Entrez l'e-mail">
+                                 autofocus placeholder="Entrez l'e-mail">
                             <span class="text-danger">
                                 @error('email')
                                     {{ $message }}
@@ -52,7 +52,7 @@
                                     Mot de passe oublié?
                                 </a>
                             </label>
-                            <input id="password" type="password" class="form-control" name="password" required data-eye
+                            <input id="password" type="password" class="form-control" name="password"  data-eye
                                 placeholder="Entrer le mot de passe" autocomplete="off">
                             <span class="text-danger">
                                 @error('password')
@@ -84,3 +84,4 @@
 </body>
 
 </html>
+

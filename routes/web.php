@@ -18,10 +18,6 @@ use App\Http\Controllers\ProjectController as ControllersProjectController;
 use App\Http\Controllers\CategoryController as ControllersCategoryController;
 use App\Http\Controllers\Administrations\AboutController as AdministrationsAboutController;
 
-Route::get('/test',[AuthController::class,'test'])->name('test');
-Route::get('/login',[AuthController::class,'login'])->name('login');
-Route::post('/authLogin',[AuthController::class,'make'])->name('auth.login');
-Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::get('/', [HomeController::class,'index'])->name('home');
 //blog
@@ -37,9 +33,6 @@ Route::get('/project/{slug}', [ControllersProjectController::class, 'show'])->na
 Route::get('/about/{slug}', [AboutController::class,'index'])->name('about');
 Route::get('/contact', [ContactController::class,'index'])->name('contact');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 /*ADMIN ROUTES */
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
@@ -91,3 +84,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 });
 
 
+
+Route::get('/login', function () {
+    return view('login');
+});
+
+require __DIR__.'/auth.php';

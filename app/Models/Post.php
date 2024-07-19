@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
-    use HasFactory;
     use Sluggable;
     use HasFactory;
     protected $fillable=['title','slug','body','approved','user_id','category_id','view_count'];
